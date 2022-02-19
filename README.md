@@ -12,6 +12,8 @@ Previously I developed a Home Assistant custom component (https://github.com/dgo
 
 This daemon relies in [python-dali](https://github.com/sde1000/python-dali) so all devices supported by this library should also be supported by dali2mqtt.
 
+In this fork added [RPi4-RTC-PoE](https://www.ab-log.ru/forum/viewtopic.php?f=1&t=1895&sid=fc49ed99d347ee3244555ba6ec3295a2) driver
+
 ## How to use
 
 ### Create a Virtual Environment (recommended) and install the requirements

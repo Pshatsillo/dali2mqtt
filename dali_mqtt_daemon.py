@@ -44,6 +44,7 @@ from consts import (
     CONF_MQTT_PASSWORD,
     HA_DISCOVERY_PREFIX,
     HASSEB,
+    RPI_DALI,
     MIN_HASSEB_FIRMWARE_VERSION,
     MQTT_AVAILABLE,
     MQTT_BRIGHTNESS_COMMAND_TOPIC,
@@ -539,6 +540,10 @@ def main(args):
         from dali.driver.daliserver import DaliServer
 
         dali_driver = DaliServer("localhost", 55825)
+    elif config.dali_driver == RPI_DALI:
+        from rpidali import RpiDali
+
+        dali_driver = RpiDali()
 
     should_backoff = True
     retries = 0
@@ -572,10 +577,10 @@ if __name__ == "__main__":
         f"--{CONF_MQTT_PORT.replace('_','-')}", help="MQTT port", type=int
     )
     parser.add_argument(
-        f"--{CONF_MQTT_USERNAME.replace('_','-')}", help="MQTT username"
+        f"--{CONF_MQTT_USERNAME.replace('_','-')}", help="MQTT username", default=""
     )
     parser.add_argument(
-        f"--{CONF_MQTT_PASSWORD.replace('_','-')}", help="MQTT password"
+        f"--{CONF_MQTT_PASSWORD.replace('_','-')}", help="MQTT password", default=""
     )
     parser.add_argument(
         f"--{CONF_MQTT_BASE_TOPIC.replace('_','-')}", help="MQTT base topic"
@@ -583,7 +588,7 @@ if __name__ == "__main__":
     parser.add_argument(
         f"--{CONF_DALI_DRIVER.replace('_','-')}",
         help="DALI device driver",
-        choices=DALI_DRIVERS,
+        choices=DALI_DRIVERS, default="rpidali"
     )
     parser.add_argument(
         f"--{CONF_HA_DISCOVERY_PREFIX.replace('_','-')}",

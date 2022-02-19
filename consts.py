@@ -8,7 +8,8 @@ __email__ = "diogogomes@gmail.com"
 HASSEB = "hasseb"
 TRIDONIC = "tridonic"
 DALI_SERVER = "dali_server"
-DALI_DRIVERS = [HASSEB, TRIDONIC, DALI_SERVER, "dummy"]
+RPI_DALI = "rpidali"
+DALI_DRIVERS = [HASSEB, TRIDONIC, DALI_SERVER, RPI_DALI, "dummy"]
 
 CONF_CONFIG = "config"
 CONF_DEVICES_NAMES_FILE = "devices_names"
