@@ -18,8 +18,8 @@ class RpiDali:
     def __init__(self, callback=None):
         self.result = None
         self._callback = callback
-        # fd = os.open(filename, os.O_RDWR)
-        # self.f = open(fd, "wb+", buffering=0)
+        fd = os.open(filename, os.O_RDWR)
+        self.f = open(fd, "wb+", buffering=0)
 
     def do_work(self):
         @atexit.register
@@ -33,36 +33,30 @@ class RpiDali:
         raise SystemExit
 
     def send(self, command, timeout=None):
-        # print("send")
-        fd = os.open(filename, os.O_RDWR)
-        self.f = open(fd, "wb+", buffering=0)
         assert isinstance(command, Command)
         message = struct.pack("B", 153) + command.frame.pack
-        logging.info("command: {}{}".format(
-            command, " (twice)" if command.sendtwice else ""))
 
         datas = str(message.hex())
-        # try:
-        #     self.f.write(bytes(datas, 'UTF-8'))
-        # except Exception as err:
-        #     logging.error(err)
+        try:
+            self.f.write(bytes(datas, 'UTF-8'))
+        except Exception as err:
+            logging.error(err)
 
-        # try:
-        #     pollerObject = select.poll()
-        #     pollerObject.register(self.f, select.POLLIN)
-        #     fdVsEvent = pollerObject.poll(100)
-        #     for descriptor, Event in fdVsEvent:
-        #         self.result = self.f.readline()
-        # except Exception as err:
-        #     print(err)
+        try:
+            pollerObject = select.poll()
+            pollerObject.register(self.f, select.POLLIN)
+            fdVsEvent = pollerObject.poll(100)
+            for descriptor, Event in fdVsEvent:
+                self.result = self.f.readline()
+        except Exception as err:
+            print(err)
 
-        self.result = self.f.readline()
-        self.f.close()
         str_result = str(self.result)[2:8]
         try:
             result = bytes.fromhex(str_result)
         except Exception as err:
             result = b"\x99\x00\x00"
+        self.result = None
         response = self.unpack_response(command, result)
         if response:
             logging.info("  -> {0}".format(response))
@@ -89,6 +83,8 @@ class RpiDali:
         else:
             status = 1
 
+        # print("status:", status)
+        # print("command",command)
         if command.response:
             if status == 0:
                 response = command.response(None)
@@ -101,12 +97,4 @@ class RpiDali:
                 response = command.response(dali.frame.BackwardFrameError(255))
             else:
                 raise CommunicationError("status was %d" % status)
-        else:
-            print("No response")
-        # if command.response:
-        #     if status == 255:
-        #         response = command.response(dali.frame.BackwardFrameError(255))
-        #     else:
-        #         response = command.response(dali.frame.BackwardFrame(status))
-
         return response

@@ -40,7 +40,7 @@ class Lamp:
         self.driver = driver
         self.short_address = short_address
         self.friendly_name = friendly_name
-        self.device_name = slugify(friendly_name)
+        self.device_name = slugify(str(friendly_name))
         self.min_physical_level = min_physical_level
         self.min_level = min_level
         self.max_level = max_level
