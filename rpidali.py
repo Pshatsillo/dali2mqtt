@@ -10,7 +10,7 @@ import dali.gear.general as gear
 from dali.command import Command
 from dali.exceptions import CommunicationError
 
-filename = "dali.txt"
+filename = "/dev/dali"
 
 
 class RpiDali:
